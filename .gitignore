@@ -1,3 +1,4 @@
 /node_modules
 .env
 ts_pass.js
+.idea
