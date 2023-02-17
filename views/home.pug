@@ -1,0 +1,49 @@
+extends layout
+
+block content
+    if(success)
+        div(class="alert alert-success" role="alert")=success
+    if(error)
+        div(class="alert alert-danger" role="alert")=error
+    div(class="card" style="margin-top: 20px;margin-bottom: 20px")
+        div(class="card-header text-center")
+            strong()="Server info"
+        div(class="card-body")
+            div(class="table-responsive")
+                table(class="table")
+                    tr
+                        th Server name:
+                        td=server_info.virtualserverName
+                    tr
+                        th Connected clients:
+                        td #{server_info.virtualserverClientsonline - server_info.virtualserverQueryclientsonline} / #{server_info.virtualserverMaxclients}
+                    tr
+                        th IP:
+                        td=server_info.virtualserverIp
+                    tr
+                        th Server status:
+                        td
+                            if server_info.virtualserverStatus == "online"
+                                span(style="color:green")=server_info.virtualserverStatus
+                            else
+                                span(style="color:red")=server_info.virtualserverStatus
+
+    div(class="card")
+        div(class="card-header text-center")
+            strong()
+                span(style="color: green")="Online "
+                    span(style="color: black")="users"
+        div(class="card-body")
+            div(class="table-responsive")
+                table(class="table")
+                    thead
+                        tr
+                        th='Database ID'
+                        th='Nickname'
+                    tbody
+                        each client in clients
+                            if (client.nickname !== "TS3-bot")
+                                tr
+                                td=client.databaseId
+                                td=client.nickname
+                                td=Date(client.created)
