@@ -21,7 +21,10 @@ html
             </ul>
             <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-            <button class="logout"><a href="user/logout" class="btn btn-primary">Log Out</a></button>
+            if (login)
+                <a href="/logout" style="text-decoration: none;margin-right: 10px;color: black;">Log Out</a>
+            else
+                <a href="/login" style="text-decoration: none;margin-right: 10px;color: black;">Login</a>
             </li>
             <li>
             </li>

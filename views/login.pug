@@ -8,11 +8,11 @@ block content
     div(class="card" style="margin-top: 20px")
         div(class="card-header text-center") Login
         div(class="card-body")
-            form(role='form' method="POST" action="/user/login")
+            form(role='form' method="POST" action="/login")
                 div.form-group
                     label(for="username") Username:
                     input#username.form-control(type="text", name="username" required="")
                 div.form-group
                     label(for="password") Password:
                     input#password.form-control(type="password", name="password" required="")
-                input#submit.form-control(type="submit", class="btn btn-primary" value="Register", style="margin-top: 10px;")
+                input#submit.form-control(type="submit", class="btn btn-primary" value="Login", style="margin-top: 10px;")

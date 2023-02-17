@@ -1,38 +1,59 @@
-require("dotenv").config();
 const express = require('express');
-const path = require("path");
-const cors = require("cors");
-const {log} = require("mercedlogger");
-const morgan = require("morgan");
-const UserRouter = require("./controllers/UserController");
-const AdministrationRouter = require("./controllers/AdministrationController");
-const {createContext, isLoggedIn} = require("./controllers/middleware");
-const cookieParser = require("cookie-parser");
-const HomeRouter = require("./controllers/HomeController");
-const ClientsRouter = require("./controllers/Clients");
-
-const { PORT = 3000 } = process.env;
 const app = express();
-
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(morgan("tiny"));
-app.use(express.json());
-app.use(createContext);
+const path = require("path");
+const {log} = require("mercedlogger");
+const session = require("express-session");
+const User = require('./database/models/User');
+require("dotenv").config();
+const bodyParser = require("body-parser");
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use('/administration', AdministrationRouter);
-app.use('/user', UserRouter);
-app.use('/', HomeRouter);
-app.use('/clients', ClientsRouter);
-/*
+app.use(
+    session({
+        resave: false,
+        saveUninitialized: true,
+        secret:
+            process.env.SECRET
+    }),
+);
+app.use(bodyParser.urlencoded({ extended: true }));
 
+const passport = require("passport");
+app.use(passport.initialize());
+app.use(passport.session());
 
+passport.serializeUser(function(user, done) {
+    done(null, user._id);
+});
 
-*/
+passport.deserializeUser(function(userId, done) {
+    User.findById(userId, (err, user) => done(err, user));
+});
 
+const LocalStrategy = require("passport-local").Strategy;
+const local = new LocalStrategy((username, password, done) => {
+    User.findOne({ username })
+        .then(user => {
+            if(!user || !user.validPassword(password)){
+                done(null, false, { error: "Invalid username/password" });
+            } else {
+                done(null, user);
+            }
+        })
+        .catch(e => done(e));
+})
+
+passport.use("local", local);
+
+app.use(function (req, res, next){
+    res.locals.login = req.user;
+    next();
+});
+
+app.use("/", require("./routes/router")(passport));
+
+const { PORT = 3000 } = process.env;
 app.listen(PORT, () => log.green("SERVER STATUS", `Listening on port ${PORT}`));
 
