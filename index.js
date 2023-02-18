@@ -4,10 +4,9 @@ const path = require("path");
 const {log} = require("mercedlogger");
 const session = require("express-session");
 const User = require('./database/models/User');
-const Client = require('./database/models/TeamSpeakClient');
 require("dotenv").config();
 const bodyParser = require("body-parser");
-const TeamsSpeakClients = require("./controllers/TeamSpeakClientsController");
+const {onConnect} = require("./controllers/TeamSpeakClientsController");
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -47,20 +46,8 @@ const local = new LocalStrategy((username, password, done) => {
         .catch(e => done(e));
 })
 
-TeamsSpeakClients().then(function (result){
-   result.forEach(client => {
-       let nickname = client.propcache.clientNickname;
-       let last_connected = client.propcache.clientLastconnected;
-       let created = client.propcache.created;
-       let database_id = client.propcache.clientDatabaseId;
-       let unique_identifier = client.propcache.clientUniqueIdentifier;
-       let country = client.propcache.clientCountry;
 
-       if (!Client.findOne({ "nickname": nickname})){
-           Client.create({nickname, last_connected, created, database_id, unique_identifier, country});
-       }
-   });
-});
+onConnect();
 
 passport.use("local", local);
 
