@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const ts = require("../ts3_connection");
 const User = require("../database/models/User");
+const {getOnlineClients} = require("../controllers/TeamSpeakClientsController");
 
-// GET Routes
+// Authorization const
 const loggedInOnly = (req, res, next) => {
     if (req.isAuthenticated()) next();
     else res.redirect("/login");
@@ -17,11 +18,10 @@ const loggedOutOnly = (req, res, next) => {
 // Route Handlers
 function authenticate(passport) {
     // Main Page
-    router.get("/", loggedInOnly,async (req, res) => {
-        const clients = await ts.clientList()
-        ts.serverInfo().then().then(server_info => {
-            res.render("home", {server_info: server_info, clients: clients, title: "Home", req: req});
-        });
+    router.get("/",async (req, res) => {
+        const clients = await getOnlineClients();
+        const server_info = await ts.serverInfo();
+        res.render("home", {server_info: server_info, clients: clients, title: "Home", req: req});
     });
 
     // Login View
@@ -29,8 +29,10 @@ function authenticate(passport) {
         res.render("login", {title: "Login"});
     });
 
-    router.get("/administration", loggedInOnly, (req, res) => {
-        res.render("administration");
+    // Administration View
+    router.get("/administration", loggedInOnly, async (req, res) => {
+        const clients = await getClients();
+        res.render("administration", {clients: clients, title: "Administration"});
     })
 
     // Login Handler
@@ -75,6 +77,7 @@ function authenticate(passport) {
         });
     });
 
+    // TODO
     // Error Handler
 
     return router;

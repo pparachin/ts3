@@ -6,7 +6,7 @@ const session = require("express-session");
 const User = require('./database/models/User');
 require("dotenv").config();
 const bodyParser = require("body-parser");
-const {onConnect} = require("./controllers/TeamSpeakClientsController");
+const {onConnect, onDisconnect} = require("./controllers/TeamSpeakClientsController");
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -48,6 +48,7 @@ const local = new LocalStrategy((username, password, done) => {
 
 
 onConnect();
+onDisconnect();
 
 passport.use("local", local);
 

@@ -40,10 +40,11 @@ block content
                         tr
                         th='Database ID'
                         th='Nickname'
+                        th='Current conn. time'
                     tbody
                         each client in clients
                             if (client.nickname !== "TS3-bot")
                                 tr
-                                td=client.databaseId
+                                td=client.database_id
                                 td=client.nickname
-                                td=Date(client.created)
+                                td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60)+" minutes"

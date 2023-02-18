@@ -6,7 +6,8 @@ const clientSchema = new mongo.Schema({
     created: {type: Number},
     database_id: {type: String},
     unique_identifier: {type: String},
-    country: {type: String}
+    country: {type: String},
+    time_spent: {type: Number}
 });
 
 module.exports = mongo.model("Client", clientSchema);
