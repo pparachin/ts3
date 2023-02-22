@@ -1,5 +1,17 @@
 extends layout
 
+append scripts
+    script.
+        function poke(id) {
+            $.post("/administration/user/poke", {id:id})
+        }
+        function kick(id) {
+            $.post("/administration/user/kick", {id:id})
+        }
+        function ban(id) {
+            $.post("/administration/user/ban", {id:id})
+        }
+
 block content
     if(success)
         div(class="alert alert-success" role="alert")=success
@@ -38,13 +50,23 @@ block content
                 table(class="table")
                     thead
                         tr
-                        th='Database ID'
                         th='Nickname'
                         th='Current conn. time'
+                        th='Poke'
+                        th='Kick'
+                        th='Ban'
                     tbody
+                        -let id = 0;
                         each client in clients
                             if (client.nickname !== "TS3-bot")
                                 tr
-                                td=client.database_id
                                 td=client.nickname
                                 td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60)+" minutes"
+                            if (login)
+                                td
+                                    button(onclick="poke(" + id + ")" type="button" class="btn btn-outline-info" style="text-decoration: none; color:black")="Poke"
+                                td
+                                    button(onclick="kick(" + id + ")" type="button" class="btn btn-outline-warning" style="text-decoration: none; color:black")="Kick"
+                                td
+                                    button(onclick="ban(" + id + ")" type="button" class="btn btn-outline-danger" style="text-decoration: none; color:black")="Ban"
+                                - id++

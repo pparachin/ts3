@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+    div(class="card")
+        div(class="card-header text-center")
+            strong()
+                span(style="color: green")="Online "
+                    span(style="color: black")="users"
+        div(class="card-body")
+            div(class="table-responsive")
+                table(class="table")
+                    thead
+                        tr
+                        th='id'
+                        th='nickname'
+                        th='database_id'
+                        th='unique_identifier'
+                        th='country'
+                        th='last_connected'
+                        th='time_spent'
+                    tbody
+                        -let id = 0;
+                        each client in clients
+                            if (client.nickname !== "TS3-bot")
+                                tr
+                                td=client._id
+                                td=client.nickname
+                                td=client.database_id
+                                td=client.unique_identifier
+                                td=client.country
+                                td=client.last_connected
+                                td=client.time_spent
+

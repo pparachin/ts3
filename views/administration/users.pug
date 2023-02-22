@@ -1,0 +1,37 @@
+extends ../layout
+
+
+
+
+block content
+    div(class="card")
+        div(class="card-header text-center")
+            strong()
+                span(style="color: green")="Online "
+                    span(style="color: black")="users"
+        div(class="card-body")
+            div(class="table-responsive")
+                table(class="table")
+                    thead
+                        tr
+                        th='Database ID'
+                        th='Nickname'
+                        th='Current conn. time'
+                        th='Poke'
+                        th='Kick'
+                        th='Ban'
+                    tbody
+                        -let id = 0;
+                        each client in clients
+                            if (client.nickname !== "TS3-bot")
+                                tr
+                                td=client.databaseId
+                                td=client.nickname
+                                td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60)+" minutes"
+                                td
+                                    button(onclick="poke("+id+")" type="button" class="btn btn-outline-info" style="text-decoration: none; color:black")="Poke"
+                                td
+                                    button(onclick="kick("+id+")" type="button" class="btn btn-outline-warning" style="text-decoration: none; color:black")="Kick"
+                                td
+                                    button(onclick="ban("+id+")" type="button" class="btn btn-outline-danger" style="text-decoration: none; color:black")="Ban"
+                                - id++

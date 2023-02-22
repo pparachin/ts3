@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const ts = require("../ts3_connection");
 const User = require("../database/models/User");
-const {getOnlineClients} = require("../controllers/TeamSpeakClientsController");
+const {getOnlineClients, allClients} = require("../controllers/TeamSpeakClientsController");
+const Client = require("../database/models/TeamSpeakClient");
+const {all} = require("express/lib/application");
 
 // Authorization const
 const loggedInOnly = (req, res, next) => {
@@ -30,10 +32,24 @@ function authenticate(passport) {
     });
 
     // Administration View
-    router.get("/administration", loggedInOnly, async (req, res) => {
-        const clients = await getClients();
-        res.render("administration", {clients: clients, title: "Administration"});
-    })
+    router.get("/administration/index", loggedInOnly, async (req, res) => {
+        res.render("administration/index", {title: "Administration"});
+    });
+
+    router.get("/administration/users", loggedInOnly, async (req, res) => {
+        const clients = await getOnlineClients();
+        res.render("administration/users", {title: "Administration - users", clients: clients});
+    });
+
+    router.get("/administration/clients", loggedInOnly, (req, res) => {
+       Client.find({}, function (error, result){
+           if(!error){
+               res.render("administration/clients", {title: "Administration - clients", clients: result});
+           } else {
+               throw error;
+           }
+       }).clone().catch(function (error){console.log(error)})
+    });
 
     // Login Handler
     router.post(
@@ -76,6 +92,22 @@ function authenticate(passport) {
             res.redirect("/login");
         });
     });
+
+    router.post("/administration/user/poke", async function (req, res){
+        const clients = await getOnlineClients();
+        await clients[req.body.id].poke("test")
+    });
+
+    router.post("/administration/user/kick", async function (req, res){
+        const clients = await getOnlineClients();
+        await clients[req.body.id].kickFromServer("prd");
+    });
+
+    router.post("/administration/user/ban", async function(req, res){
+       const clients = await getOnlineClients();
+       await clients[req.body.id].ban("test", 60);
+    });
+
 
     // TODO
     // Error Handler

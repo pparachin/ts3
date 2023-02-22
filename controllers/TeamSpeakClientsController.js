@@ -45,7 +45,7 @@ async function compareOnlineToDb(connected_clients){
  */
 async function onConnect(){
     ts.on("clientconnect", async ev => {
-        console.log(ev.client.propcache.clientUniqueIdentifier);
+        console.log("User "+ev.client.propcache.clientNickname+" connected");
         let id_client = ev.client.propcache.clientUniqueIdentifier;
         if (await Client.findOne({"unique_identifier": id_client})) {
             await Client.updateOne({"unique_identifier" : id_client}, {
@@ -74,7 +74,6 @@ async function onDisconnect(){
     ts.on("clientdisconnect", async ev => {
         const id_client = ev.client.propcache.clientUniqueIdentifier;
         const client = await Client.findOne({"unique_identifier": id_client});
-        console.log(client.last_connected);
         const spent_time = Math.floor(((Date.now() / 1000) - client.last_connected) / 60)
         if (client.time_spent){
             const new_time = client.time_spent + spent_time;
@@ -82,10 +81,20 @@ async function onDisconnect(){
         } else {
             await client.updateOne({"time_spent" : spent_time});
         }
+        console.log("User "+client.nickname+" disconnected after "+spent_time+" minutes");
     })
 }
+
+async function getAllClients(){
+    await Client.find({}, function (error, result){
+        clients.push(result);
+    });
+    return clients;
+}
+
 
 module.exports.getOnlineClients = getOnlineClients;
 module.exports.onConnect = onConnect;
 module.exports.compareOnlineToDb = compareOnlineToDb;
 module.exports.onDisconnect = onDisconnect;
+module.exports.getAllClients = getAllClients;
