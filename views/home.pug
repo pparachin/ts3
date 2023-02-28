@@ -52,9 +52,10 @@ block content
                         tr
                         th='Nickname'
                         th='Current conn. time'
-                        th='Poke'
-                        th='Kick'
-                        th='Ban'
+                        if(login)
+                            th='Poke'
+                            th='Kick'
+                            th='Ban'
                     tbody
                         -let id = 0;
                         each client in clients
