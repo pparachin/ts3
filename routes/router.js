@@ -98,17 +98,17 @@ function authenticate(passport) {
 
     router.post("/administration/user/poke", async function (req, res){
         const clients = await getOnlineClients();
-        await clients[req.body.id].poke("test")
+        await clients[req.body.id].poke(req.body.poke_message)
     });
 
     router.post("/administration/user/kick", async function (req, res){
         const clients = await getOnlineClients();
-        await clients[req.body.id].kickFromServer("prd");
+        await clients[req.body.id].kickFromServer(req.body.message);
     });
 
     router.post("/administration/user/ban", async function(req, res){
        const clients = await getOnlineClients();
-       await clients[req.body.id].ban("test", 60);
+       await clients[req.body.id].ban(req.body.ban_message, req.body.ban_length);
     });
 
 

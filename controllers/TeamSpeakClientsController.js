@@ -81,7 +81,7 @@ async function onDisconnect(){
         } else {
             await client.updateOne({"time_spent" : spent_time});
         }
-        console.log("User "+client.nickname+" disconnected after "+spent_time+" minutes");
+        console.log("Client "+client.nickname+" disconnected after "+spent_time+" minutes");
     })
 }
 

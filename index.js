@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const passport = require("passport");
 app.use(passport.initialize());
 app.use(passport.session());
+app.locals.moment = require('moment')
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);

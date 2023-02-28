@@ -11,13 +11,13 @@ block content
                 table(class="table")
                     thead
                         tr
-                        th='id'
-                        th='nickname'
-                        th='database_id'
-                        th='unique_identifier'
-                        th='country'
-                        th='last_connected'
-                        th='time_spent'
+                        th='_id'
+                        th='Nickname'
+                        th='Database ID'
+                        th='Unique identifier'
+                        th='Country'
+                        th='Last connected time'
+                        th='Time spent on server (since February 28)'
                     tbody
                         -let id = 0;
                         each client in clients
@@ -28,6 +28,7 @@ block content
                                 td=client.database_id
                                 td=client.unique_identifier
                                 td=client.country
+                                td=moment(client.last_connected).format('DD.MM.YYYY')
                                 td=client.last_connected
                                 td=client.time_spent
 

@@ -3,13 +3,23 @@ extends layout
 append scripts
     script.
         function poke(id) {
-            $.post("/administration/user/poke", {id:id})
+            let poke_message = prompt("Enter poke message");
+            if (poke_message != null){
+                $.post("/administration/user/poke", {id:id, poke_message:poke_message})
+            }
         }
         function kick(id) {
-            $.post("/administration/user/kick", {id:id})
+            let kick_message = prompt("Enter kick message");
+            if (kick_message != null){
+                $.post("/administration/user/kick", {id:id, kick_message:kick_message})
+            }
         }
         function ban(id) {
-            $.post("/administration/user/ban", {id:id})
+            let ban_message = prompt("Enter ban message");
+            let ban_length = prompt("Enter ban length in sec")
+            if (ban_message != null && ban_length != null){
+                $.post("/administration/user/ban", {id:id, ban_length:ban_length, ban_message:ban_message})
+            }
         }
 
 block content
