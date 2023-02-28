@@ -5,6 +5,7 @@ const User = require("../database/models/User");
 const {getOnlineClients, allClients} = require("../controllers/TeamSpeakClientsController");
 const Client = require("../database/models/TeamSpeakClient");
 const {all} = require("express/lib/application");
+const {TeamSpeakChannel} = require("ts3-nodejs-library");
 
 // Authorization const
 const loggedInOnly = (req, res, next) => {
@@ -23,6 +24,8 @@ function authenticate(passport) {
     router.get("/",async (req, res) => {
         const clients = await getOnlineClients();
         const server_info = await ts.serverInfo();
+        const channels = await new TeamSpeakChannel(ts);
+        console.log(channels)
         res.render("home", {server_info: server_info, clients: clients, title: "Home", req: req});
     });
 
@@ -63,7 +66,7 @@ function authenticate(passport) {
     );
 
     // Register View
-    router.get("/register", loggedOutOnly, (req, res) => {
+    /* router.get("/register", loggedOutOnly, (req, res) => {
         res.render("register");
     });
 
@@ -84,7 +87,7 @@ function authenticate(passport) {
                 } else next(err);
             });
     });
-
+    */
     // Logout Handler
     router.all("/logout", function(req, res) {
         req.logout(function (err){
