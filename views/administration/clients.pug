@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-    div(class="card")
+    div(class="card" style="margin-top:20px")
         div(class="card-header text-center")
             strong()
                 span(style="color: green")="Online "
@@ -19,7 +19,6 @@ block content
                         th='Last connected time'
                         th='Time spent on server (since February 28)'
                     tbody
-                        -let id = 0;
                         each client in clients
                             if (client.nickname !== "TS3-bot")
                                 tr
@@ -28,7 +27,6 @@ block content
                                 td=client.database_id
                                 td=client.unique_identifier
                                 td=client.country
-                                td=moment(client.last_connected).format('DD.MM.YYYY')
-                                td=client.last_connected
+                                td=moment(client.last_connected * 1000).format('DD.MM.YYYY')
                                 td=client.time_spent
 
