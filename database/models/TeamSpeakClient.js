@@ -7,7 +7,9 @@ const clientSchema = new mongo.Schema({
     database_id: {type: String},
     unique_identifier: {type: String},
     country: {type: String},
-    time_spent: {type: Number}
+    time_spent: {type: Number},
+    ip_address: {type: String},
+    platform: {type: String}
 });
 
 module.exports = mongo.model("Client", clientSchema);

@@ -4,8 +4,7 @@ block content
     div(class="card" style="margin-top:20px")
         div(class="card-header text-center")
             strong()
-                span(style="color: green")="Online "
-                    span(style="color: black")="users"
+                    span(style="color: black") All clients
         div(class="card-body")
             div(class="table-responsive")
                 table(class="table")
@@ -14,8 +13,9 @@ block content
                         th='_id'
                         th='Nickname'
                         th='Database ID'
-                        th='Unique identifier'
+                        th='IP address'
                         th='Country'
+                        th Platform
                         th='Last connected time'
                         th='Time spent on server (since February 28)'
                     tbody
@@ -25,8 +25,9 @@ block content
                                 td=client._id
                                 td=client.nickname
                                 td=client.database_id
-                                td=client.unique_identifier
+                                td=client.ip_address
                                 td=client.country
+                                td=client.platform
                                 td=moment(client.last_connected * 1000).format('DD.MM.YYYY')
                                 td=client.time_spent
 

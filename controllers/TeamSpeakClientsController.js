@@ -1,5 +1,6 @@
 const ts = require("../ts3_connection");
 const Client = require("../database/models/TeamSpeakClient");
+const {log} = require("mercedlogger");
 
 /**
  * Function get list of actual online clients on server
@@ -45,11 +46,13 @@ async function compareOnlineToDb(connected_clients){
  */
 async function onConnect(){
     ts.on("clientconnect", async ev => {
-        console.log("User "+ev.client.propcache.clientNickname+" connected");
+        log.green("EVENT CONNECT", `Client ${ev.client.propcache.clientNickname} connected`);
         let id_client = ev.client.propcache.clientUniqueIdentifier;
         if (await Client.findOne({"unique_identifier": id_client})) {
             await Client.updateOne({"unique_identifier" : id_client}, {
-                last_connected: ev.client.propcache.clientLastconnected
+                last_connected: ev.client.propcache.clientLastconnected,
+                ip_address: ev.client.propcache.connectionClientIp,
+                platform: ev.client.propcache.clientPlatform
             });
         } else {
             let nickname = ev.client.propcache.clientNickname;
@@ -58,8 +61,10 @@ async function onConnect(){
             let database_id = ev.client.propcache.clientDatabaseId;
             let unique_identifier = ev.client.propcache.clientUniqueIdentifier;
             let country = ev.client.propcache.clientCountry;
-            console.log("Db create")
-            await Client.create({nickname, last_connected, created, database_id, unique_identifier, country});
+            let ip_address = ev.client.propcache.connectionClientIp;
+            let platform = ev.client.propcache.clientPlatform;
+            log.green("DATABASE STATE",`Client ${nickname} was added to database`)
+            await Client.create({nickname, last_connected, created, database_id, unique_identifier, country, ip_address, platform});
         }
     });
 }
