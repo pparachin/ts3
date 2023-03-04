@@ -17,16 +17,16 @@ append scripts
         function ban(id) {
             let ban_message = prompt("Enter ban message");
             let ban_length = prompt("Enter ban length in sec")
-            if (ban_message != null && ban_length != null){
-                $.post("/administration/user/ban", {id:id, ban_length:ban_length, ban_message:ban_message})
+            if (ban_message != null && ban_length != null) {
+                $.post("/administration/user/ban", {id: id, ban_length: ban_length, ban_message: ban_message})
             }
         }
 
 block content
     if(success)
-        div(class="alert alert-success" role="alert")=success
+        div(class="alert alert-success")=success
     if(error)
-        div(class="alert alert-danger" role="alert")=error
+        div(class="alert alert-danger")=error
     div(class="card" style="margin-top: 20px;margin-bottom: 20px")
         div(class="card-header text-center")
             strong()="Server info"
@@ -45,7 +45,7 @@ block content
                     tr
                         th Server status:
                         td
-                            if server_info.virtualserverStatus == "online"
+                            if server_info.virtualserverStatus === "online"
                                 span(style="color:green")=server_info.virtualserverStatus
                             else
                                 span(style="color:red")=server_info.virtualserverStatus
@@ -54,7 +54,7 @@ block content
         div(class="card-header text-center")
             strong()
                 span(style="color: green")="Online "
-                    span(style="color: black")="users"
+                    span(style="color: black")="clients"
         div(class="card-body")
             div(class="table-responsive")
                 table(class="table")
@@ -67,12 +67,14 @@ block content
                             th='Kick'
                             th='Ban'
                     tbody
-                        -let id = 0;
+                        - let id = 0;
+                        if (clients.length === 0)
+                            tr
+                              td(colspan="5" class="text-center") Unfortunately, no one is connected at the moment. :(
                         each client in clients
-                            if (client.nickname !== "TS3-bot")
-                                tr
-                                td=client.nickname
-                                td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60)+" minutes"
+                            tr
+                            td=client.nickname
+                            td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60)+" minutes"
                             if (login)
                                 td
                                     button(onclick="poke(" + id + ")" type="button" class="btn btn-outline-info" style="text-decoration: none; color:black")="Poke"

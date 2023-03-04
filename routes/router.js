@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const ts = require("../ts3_connection");
-const User = require("../database/models/User");
-const {getOnlineClients, allClients} = require("../controllers/TeamSpeakClientsController");
+const {getOnlineClients} = require("../controllers/TeamSpeakClientsController");
 const Client = require("../database/models/TeamSpeakClient");
-const {all} = require("express/lib/application");
 const {TeamSpeakChannel} = require("ts3-nodejs-library");
+const {getUsers} = require("../controllers/UsersController");
+const bcrypt = require("bcrypt");
+const User = require("../database/models/User");
 
 // Authorization const
 const loggedInOnly = (req, res, next) => {
@@ -24,8 +25,8 @@ function authenticate(passport) {
     router.get("/",async (req, res) => {
         const clients = await getOnlineClients();
         const server_info = await ts.serverInfo();
-        const channels = await new TeamSpeakChannel(ts);
-        console.log(channels)
+        // const channels = await new TeamSpeakChannel(ts);
+        // console.log(channels)
         res.render("home", {server_info: server_info, clients: clients, title: "Home", req: req});
     });
 
@@ -39,9 +40,39 @@ function authenticate(passport) {
         res.render("administration/index", {title: "Administration"});
     });
 
-    router.get("/administration/users", loggedInOnly, async (req, res) => {
-        const clients = await getOnlineClients();
-        res.render("administration/users", {title: "Administration - users", clients: clients});
+    /* TODO:
+        Const users is sometimes not defined, so it will throw error when the page is loading
+        Need to figure out how to fix this
+     */
+    router.get("/administration/users/index", loggedInOnly, async (req, res) => {
+        const users = await getUsers();
+        res.render("administration/users/index", {title: "Administration - users", users: users});
+    });
+
+    router.get("/administration/users/add", loggedInOnly, async (req, res) => {
+        res.render("administration/users/add", {title: "Administration - Add user"});
+    });
+
+    router.post("/administration/users/delete", loggedInOnly, async (req, res) => {
+        const id = req.body.id;
+        await User.deleteOne({_id: id});
+    });
+
+    router.post("/administration/users/add", loggedInOnly,async (req, res, next) => {
+        const username = req.body.username;
+        let password = req.body.password;
+        password = await bcrypt.hashSync(password, 10);
+        User.create({username, password})
+            .then(user => {
+                // req.flash("User " + user.username + "was successfully added to db.")
+                res.redirect("/administration/users/index");
+            })
+            .catch(err => {
+                if (err.name === "ValidationError") {
+                    req.flash("Sorry, that username is already taken.");
+                    res.redirect("/administration/users/add");
+                } else next(err);
+            });
     });
 
     router.get("/administration/clients", loggedInOnly, (req, res) => {
@@ -65,29 +96,6 @@ function authenticate(passport) {
         passport.authenticate("local", { error: "Invalid username or password" })
     );
 
-    // Register View
-    /* router.get("/register", loggedOutOnly, (req, res) => {
-        res.render("register");
-    });
-
-    // Register Handler
-    router.post("/register", (req, res, next) => {
-        const { username, password } = req.body;
-        User.create({ username, password })
-            .then(user => {
-                req.login(user, err => {
-                    if (err) next(err);
-                    else res.redirect("/");
-                });
-            })
-            .catch(err => {
-                if (err.name === "ValidationError") {
-                    req.flash("Sorry, that username is already taken.");
-                    res.redirect("/register");
-                } else next(err);
-            });
-    });
-    */
     // Logout Handler
     router.all("/logout", function(req, res) {
         req.logout(function (err){

@@ -1,0 +1,32 @@
+extends ../../layout
+
+append scripts
+    script.
+        function deleteUser(id) {
+            $.post("/administration/users/delete", {id:id});
+        }
+
+
+block content
+    div(class="card" style="margin-top: 20px")
+        div(class="card-header text-center")
+            strong()
+                    span(style="color: black")="Users"
+        div(class="card-body")
+            div(class="table-responsive")
+                table(class="table")
+                    thead
+                        tr
+                        th='_id'
+                        th='Username'
+                        th='Add date'
+                        th='Delete'
+                    tbody
+                        each user in users[0]
+                            tr
+                            td=user._id
+                            td=user.username
+                            td=user.dateAdded
+                            td
+                              button(type="button" onclick="deleteUser('"+ user._id.toString() +"')" class="btn btn-danger")="DELETE"
+            a(href="./add" class="btn btn-primary")="Add new user"

@@ -1,0 +1,14 @@
+extends ../../layout
+
+block content
+    div(class="card" style="margin-top: 20px")
+        div(class="card-header text-center") Add new user
+        div(class="card-body")
+            form(role='form' method="POST" action="./add")
+                div.form-group
+                    label(for="username") Username:
+                    input#username.form-control(type="text", name="username" required="")
+                div.form-group
+                    label(for="password") Password:
+                    input#password.form-control(type="password", name="password" required="")
+                input#submit.form-control(type="submit", class="btn btn-primary" value="Add", style="margin-top: 10px;")
