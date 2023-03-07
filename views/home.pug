@@ -46,7 +46,8 @@ block content
                         th Server status:
                         td
                             if server_info.virtualserverStatus === "online"
-                                span(style="color:green")=server_info.virtualserverStatus
+                                span #{Math.round(((server_info.virtualserverUptime / 60) / 60) / 24)} days
+                                    span(style="color:green")=" "+server_info.virtualserverStatus
                             else
                                 span(style="color:red")=server_info.virtualserverStatus
 
@@ -54,7 +55,7 @@ block content
         div(class="card-header text-center")
             strong()
                 span(style="color: green")="Online "
-                    span(style="color: black")="clients"
+                    span(style="color: #adb5bd") clients
         div(class="card-body")
             div(class="table-responsive")
                 table(class="table")
@@ -73,7 +74,7 @@ block content
                         - let id = 0;
                         if (clients.length === 0)
                             tr
-                              td(colspan="5" class="text-center") Unfortunately, no one is connected at the moment. :(
+                              td(colspan="8" class="text-center") Unfortunately, no one is connected at the moment. :(
                         each client in clients
                             tr
                             td=client.nickname

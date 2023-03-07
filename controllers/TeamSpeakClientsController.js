@@ -39,7 +39,7 @@ async function compareOnlineToDb(connected_clients){
 }
 
 /**
- * Function handling new user connect event, then check if the user is already in db,
+ * Function for handling new user connect event, then check if the user is already in db,
  * if yes just update last connect time in db, if no create new record in db
  *
  * @returns {Promise<void>}
@@ -52,7 +52,8 @@ async function onConnect(){
             await Client.updateOne({"unique_identifier" : id_client}, {
                 last_connected: ev.client.propcache.clientLastconnected,
                 ip_address: ev.client.propcache.connectionClientIp,
-                platform: ev.client.propcache.clientPlatform
+                platform: ev.client.propcache.clientPlatform,
+                country: ev.client.propcache.clientCountry
             });
         } else {
             let nickname = ev.client.propcache.clientNickname;
