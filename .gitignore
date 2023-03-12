@@ -2,3 +2,4 @@
 .env
 ts_pass.js
 .idea
+/mongo_data
