@@ -64,7 +64,7 @@ block content
                         th Current conn. time
                         th Platform
                         th Country
-                        th Time spent on the server in hours (since 28 February 2023)
+                        //th Time spent on the server in hours (since 28 February 2023)
                         if(login)
                             th IP
                             th='Poke'
@@ -83,7 +83,7 @@ block content
                             td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60) + " minutes"
                             td=client.platform
                             td=client.country
-                            td=Math.floor(clients_db[di].time_spent / 60)
+                            //td=Math.floor(clients_db[di].time_spent / 60)
                             - di++
                             if (login)
                                 td=client.connectionClientIp
