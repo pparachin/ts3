@@ -4,12 +4,17 @@ const path = require("path");
 const {log} = require("mercedlogger");
 const session = require("express-session");
 const User = require('./database/models/User');
+const http = require("http");
+const server = http.createServer(app)
+const {Server} = require("socket.io");
+const io = new Server(server);
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const {onConnect, onDisconnect} = require("./controllers/TeamSpeakClientsController");
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.set('socketio', io);
 
 app.use(
     session({
@@ -57,9 +62,8 @@ app.use(function (req, res, next){
     res.locals.login = req.user;
     next();
 });
-
 app.use("/", require("./routes/router")(passport));
 
 const { PORT = 3000 } = process.env;
-app.listen(PORT, () => log.green("SERVER STATUS", `Listening on port ${PORT}`));
+server.listen(PORT, () => log.green("SERVER STATUS", `Listening on port ${PORT}`));
 

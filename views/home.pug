@@ -49,8 +49,7 @@ block content
                                 span #{Math.round(((server_info.virtualserverUptime / 60) / 60) / 24)} days
                                     span(style="color:green")=" "+server_info.virtualserverStatus
                             else
-                                span(style="color:red")=server_info.virtualserverStatus
-
+                                span(style="color:red") Offline
     div(class="card")
         div(class="card-header text-center")
             strong()
@@ -61,10 +60,11 @@ block content
                 table(class="table")
                     thead
                         tr
-                        th='Nickname'
-                        th='Current conn. time'
+                        th Nickname
+                        th Current conn. time
                         th Platform
                         th Country
+                        th Time spent on the server in hours (since 28 February 2023)
                         if(login)
                             th IP
                             th='Poke'
@@ -72,15 +72,19 @@ block content
                             th='Ban'
                     tbody
                         - let id = 0;
+                        - let di = 0;
                         if (clients.length === 0)
                             tr
-                              td(colspan="8" class="text-center") Unfortunately, no one is connected at the moment. :(
+                            td(colspan="8" class="text-center") Unfortunately, no one is connected at the moment. :(
+                        else
                         each client in clients
                             tr
                             td=client.nickname
-                            td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60)+" minutes"
+                            td=Math.floor(((Date.now() / 1000) - client.lastconnected) / 60) + " minutes"
                             td=client.platform
                             td=client.country
+                            td=Math.floor(clients_db[di].time_spent / 60)
+                            - di++
                             if (login)
                                 td=client.connectionClientIp
                                 td
@@ -90,3 +94,6 @@ block content
                                 td
                                     button(onclick="ban(" + id + ")" type="button" class="btn btn-outline-danger" style="text-decoration: none; color:black")="Ban"
                                 - id++
+    //div(class="card" style="margin-top: 20px")
+        div(class="card-header text-center")
+            strong() Recently connected users

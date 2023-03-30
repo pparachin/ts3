@@ -12,4 +12,8 @@ const ts = new TeamSpeak({
     readyTimeout: 10000
 });
 
+ts.on("error", () => {
+    console.log("error");
+})
+
 module.exports = ts;

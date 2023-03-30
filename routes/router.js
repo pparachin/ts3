@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ts = require("../ts3_connection");
-const {getOnlineClients} = require("../controllers/TeamSpeakClientsController");
+const {getOnlineClients, compareOnlineToDb} = require("../controllers/TeamSpeakClientsController");
 const Client = require("../database/models/TeamSpeakClient");
 const {TeamSpeakChannel} = require("ts3-nodejs-library");
 const {getUsers} = require("../controllers/UsersController");
@@ -24,10 +24,18 @@ function authenticate(passport) {
     // Main Page
     router.get("/",async (req, res) => {
         const clients = await getOnlineClients();
+        const clients_db = await compareOnlineToDb(clients);
         const server_info = await ts.serverInfo();
-        // const channels = await new TeamSpeakChannel(ts);
-        // console.log(channels)
-        res.render("home", {server_info: server_info, clients: clients, title: "Home", req: req});
+        res.render("home", {server_info: server_info, clients: clients, title: "Home", req: req, clients_db: clients_db});
+    });
+
+    router.get("/clients", async (req, res) => {
+       let io = req.app.get('socketio');
+       io.on('connection', async (socket) => {
+           const clients = await getOnlineClients();
+           console.log(clients)
+       });
+       res.render("clients");
     });
 
     // Login View

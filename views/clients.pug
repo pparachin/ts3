@@ -1,8 +1,12 @@
 extends layout.pug
 
+append scripts
+    script.
+        let socket = io();
+
 block content
     div(class="card" style="margin-top: 20px")
-        div(class="card-header text-center") Users
+        div(class="card-header text-center") Clients
         div(class="card-body")
                 div(class="table-responsive")
                     table(class="table")
@@ -12,10 +16,3 @@ block content
                             th='Nickname'
                             th='Kick'
                         tbody
-                            each client in clients
-                                tr
-                                td=client.databaseId
-                                td=client.nickname
-                                td
-                                    a(href='#') Kick
-                                td=Date(client.created)
