@@ -30,6 +30,7 @@ const passport = require("passport");
 app.use(passport.initialize());
 app.use(passport.session());
 app.locals.moment = require('moment')
+app.use(express.static(path.resolve('./public')));
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
